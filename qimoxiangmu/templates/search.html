@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>搜索结果</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #3498db;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-left: 20px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #3498db;
+    }
+
+    main {
+      padding: 30px 0;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .search-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-result-item {
+      margin-top: 20px;
+    }
+
+    .category-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .similarity-list {
+      list-style: none;
+    }
+
+    .similarity-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .similarity-item:last-child {
+      border-bottom: none;
+    }
+
+    .similarity-count {
+      font-weight: 500;
+      color: #3498db;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+      color: #7f8c8d;
+    }
+
+    .search-form {
+      margin-bottom: 20px;
+    }
+
+    .search-form select {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .search-form button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #f39c12;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    /* 新增图表样式 */
+    .chart-container {
+      width: 100%;
+      height: 300px;
+      margin-top: 15px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #ecf0f1;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #3498db;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">数据可视化平台</div>
+      <ul class="nav-links">
+        <li><a href="/">首页</a></li>
+        <li><a href="/recommendation">个性化推荐</a></li>
+        <li><a href="/offline_recommendation">离线推荐</a></li>
+        <li><a href="/search" class="active">搜索</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <main>
+    <h1>搜索结果</h1>
+    <p>选择一个类别查看类似类别的推荐结果</p>
+
+    <div class="search-container">
+      <form class="search-form" method="post">
+        <select name="category" required>
+          <option value="" disabled selected>请选择一个类别</option>
+          {% for category in available_categories %}
+          <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">搜索</button>
+      </form>
+
+      {% if search_results %}
+      <div class="search-result-item">
+        <div class="category-title">与 "{{ selected_category }}" 相似的类别</div>
+        <ul class="similarity-list">
+          {% for result in search_results %}
+          <li class="similarity-item">
+            <span>{{ result.similar_category }}</span>
+            <span class="similarity-count">{{ result.similarity_count }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">类别关联图表</div>
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+        </div>
+        <div class="chart-container" id="similarity-chart"></div>
+      </div>
+
+      <a href="/search" class="back-button">返回搜索</a>
+      {% else %}
+      <p>未找到与该类别相似的其他类别</p>
+      <a href="/search" class="back-button">返回搜索</a>
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2024 数据可视化平台. 保留所有权利.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% if search_results %}
+    // 类别相似度图表
+    const similarityChart = echarts.init(document.getElementById('similarity-chart'));
+    const similarityOption = {
+      title: {
+        text: '类别相似度',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
+      },
+      xAxis: {
+        type: 'category',
+        data: [{% for result in search_results %}'{{ result.similar_category }}',{% endfor %}]
+  },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      name: '相似度',
+      type: 'bar',
+      data: [{% for result in search_results %}{{ result.similarity_count }},{% endfor %}]
+  }]
+  };
+    similarityChart.setOption(similarityOption);
+
+    // 响应式调整
+    window.addEventListener('resize', function() {
+      similarityChart.resize();
+    });
+    {% endif %}
+  });
+</script>
+</body>
+</html>

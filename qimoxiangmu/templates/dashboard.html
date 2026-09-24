@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统界面示例</title>
+  <link rel="stylesheet" href="../static/js/dashboard.css">
+</head>
+<body>
+<div class="header">
+  <div class="welcome-screen">
+    <h2>欢迎进入管理系统</h2>
+  </div>
+  <div >
+    <h1>实 时 订 单 统 计 管 理 系 统</h1>
+    <div class="content">
+      <a href="/First" class="card" target="content-frame">
+        <h3 class="hover-effect">首页</h3>
+      </a>
+      <a href="/kimi" class="card" target="content-frame">
+        <h3 class="hover-effect">kimiai</h3>
+      </a>
+      <a href="/kimi_analysis"  class="card" target="content-frame">
+        <h3 class="hover-effect selected">ai智能分析</h3>
+      </a>
+
+      <a href="/bytime" class="card" target="content-frame">
+        <h3 class="hover-effect">订单增量分析</h3>
+      </a>
+      <a href="/show" class="card" target="content-frame">
+        <h3 class="hover-effect">大数据可视化</h3>
+      </a>
+        <a href="http://localhost:5022" class="card" target="content-frame">
+            <h3 class="hover-effect">智能推荐</h3>
+        </a>
+    </div>
+
+  </div>
+  <div>
+    <span id="clock"></span><br>
+    <p id="welcomeMessage"></p>
+    <a href="#" class="img"  onclick="showLogoutPrompt(event)">
+    <img src="../static/out.png" width="50px" height="50px"></a>
+  </div>
+</div>
+
+
+<div class="content-area">
+  <div class="loading">加载中...</div>
+  <iframe name="content-frame" src="/First" style="width: 100%; height: 100%; border: none;"></iframe>
+</div>
+
+<script src="../static/js/dashboard.js"></script>
+</body>
+</html>

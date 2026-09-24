@@ -1,0 +1,50 @@
+
+server {
+    listen       80;
+    listen       [::]:80;
+    server_name  39.105.42.89;  # 服务器的IP地址或域名
+    # 增大请求头和请求体的大小限制
+    client_max_body_size 10M;
+    large_client_header_buffers 4 16k;
+
+    # Web 文件根目录，确保此路径存在并且文件权限正确
+    root         /dome/qimoxiangmu/templates;
+    index        index.html;
+     location /static/ {
+        alias /dome/qimoxiangmu/static/; # Flask 项目静态文件的路径
+    }
+    error_page   500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /dome/qimoxiangmu/templates;
+ }
+    error_page 404 /404.html;
+        location = /404.html {
+            root /dome/qimoxiangmu/templates;
+        }
+    location / {
+        proxy_pass http://127.0.0.1:5000/;  # Flask 的地址(本项目是本地)
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+         try_files $uri $uri/ =404;
+
+    }
+    # 配置反向代理 WebSocket
+        location /socket.io/ {
+            proxy_pass http://127.0.0.1:5000/socket.io/;# WebSocket 服务器地址（本项目是本地）
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;  # 客户端真实 IP
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # 转发的 IP
+            proxy_set_header X-Forwarded-Proto $scheme;  # 协议（http 或 https）
+              # 防止超时断开
+            proxy_read_timeout 86400;
+            proxy_send_timeout 86400;
+      }
+
+    }
+

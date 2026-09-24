@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>智能数据分析中心</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.2/echarts.min.js"></script>
+    <style>
+        :root {
+            --cyber-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --matrix-green: #00ff00;
+        }
+        body {
+            background-color: black;
+            background-image: url('/static/background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--cyber-blue);
+            font-family: 'Segoe UI', sans-serif;
+            transition: background-position 0.5s ease;
+        }
+        .cyber-glow {
+            box-shadow: 0 0 15px var(--cyber-blue);
+            border: 1px solid var(--cyber-blue);
+            background: rgba(0, 243, 255, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cyber-glow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px var(--cyber-blue);
+        }
+        .data-card {
+            background: linear-gradient(145deg, #001529, #000613);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(0, 243, 255, 0.1);
+            animation: cyberGlow 4s linear infinite;
+        }
+        @keyframes cyberGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .neon-text {
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 10px var(--cyber-blue);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .notification.show {
+            opacity: 1;
+        }
+        .notification-success {
+            background: linear-gradient(90deg, #00f3ff, #0066ff);
+            color: black;
+        }
+        .notification-error {
+            background: linear-gradient(90deg, #ff0066, #bc13fe);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <!-- 数据总览 -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="data-card cyber-glow">
+                <h5 class="neon-text"><i class="fas fa-check-circle"></i> 有效订单</h5>
+                <h2 id="totalValid" class="text-success">0</h2>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="data-card cyber-glow">
+                <h5 class="neon-text"><i class="fas fa-times-circle"></i> 无效订单</h5>
+                <h2 id="totalInvalid" class="text-danger">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="row g-4">
+        <!-- 图表区 -->
+        <div class="col-lg-8">
+            <div class="card cyber-glow">
+                <div class="card-body">
+                    <div id="mainChart" style="height:500px"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐区 -->
+        <div class="col-lg-4">
+            <div class="card cyber-glow h-100">
+                <div class="card-body">
+                    <h4 class="text-center mb-4 neon-text"><i class="fas fa-robot"></i> 智能推荐引擎</h4>
+
+                    <!-- 热门分类 -->
+                    <div class="mb-4">
+                        <h5 class="text-warning mb-3">
+                            <i class="fas fa-fire"></i> 热门分类TOP3
+                        </h5>
+                        <div id="offlineList" class="list-group">
+                            <!-- 动态加载 -->
+                        </div>
+                    </div>
+
+                    <!-- 推荐列表 -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-info mb-3">
+                                <i class="fas fa-cube"></i> 物品推荐
+                            </h5>
+                            <div id="itemBasedList"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-user-astronaut"></i> 用户偏好
+                            </h5>
+                            <div id="userBasedList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索区域 -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card cyber-glow">
+                <div class="card-body">
+                    <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-dark text-white">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        <input type="text" id="searchInput" class="form-control bg-dark text-white search-input"
+                               placeholder="输入分类名称获取关联推荐...">
+                        <button class="btn btn-outline-primary" onclick="searchCategory()">
+                            <i class="fas fa-rocket"></i> 智能分析
+                        </button>
+                    </div>
+                    <div id="searchResults" class="mt-3 row g-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+    // 通知系统
+    function showNotification(message, type = 'success') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type === 'success' ? 'notification-success' : 'notification-error'}`;
+        notification.classList.add('show');
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // 增强搜索功能
+    function searchCategory() {
+        const input = document.getElementById('searchInput').value.trim();
+        if (!input) {
+            showNotification('请输入分类名称', 'error');
+            return;
+        }
+
+        // 显示加载状态
+        const results = document.getElementById('searchResults');
+        results.innerHTML = `<div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+            </div>`;
+
+        fetch('/search_category', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `category=${encodeURIComponent(input)}`
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('搜索失败');
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    showNotification('搜索失败，请稍后再试', 'error');
+                    throw new Error(data.error);
+                }
+
+                if (data.results.length === 0) {
+                    results.innerHTML = `<div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> 未找到相关分类
+                    </div>`;
+                    return;
+                }
+
+                results.innerHTML = data.results.map(r => `
+                    <div class="col-md-4">
+                        <div class="card cyber-glow h-100">
+                            <div class="card-body">
+                                <h5 class="text-primary">${r.related_category}</h5>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar bg-success"
+                                         style="width: ${Math.min(r.association_count*10, 100)}%">
+                                        关联强度: ${r.association_count}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                showNotification('搜索完成！');
+            })
+            .catch(error => {
+                console.error(error);
+                showNotification('搜索服务暂时不可用', 'error');
+                results.innerHTML = '';
+            });
+    }
+
+    // 更新推荐列表
+    function updateList(elementId, items, icon) {
+        const container = document.getElementById(elementId);
+        if (!items || items.length === 0) {
+            container.innerHTML = `<div class="text-muted p-2">暂无推荐数据</div>`;
+            return;
+        }
+
+        container.innerHTML = items.slice(0,3).map(item => `
+            <div class="d-flex justify-content-between align-items-center mb-2 p-2 cyber-glow">
+                <div>
+                    <span class="me-2">${icon}</span>
+                    ${item}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 初始化图表
+    let chart;
+    function initChart() {
+        chart = echarts.init(document.getElementById('mainChart'));
+        return chart;
+    }
+
+    // 动态加载数据
+    function loadData() {
+        fetch('/get_chart_data')
+            .then(response => response.json())
+            .then(data => {
+                // 更新总数显示
+                document.getElementById('totalValid').textContent = data.totals.total_valid;
+                document.getElementById('totalInvalid').textContent = data.totals.total_invalid;
+
+                // 渲染图表
+                renderCharts(data.category_data);
+                showNotification('数据更新成功！');
+            })
+            .catch(error => {
+                console.error(error);
+                showNotification('数据加载失败，请稍后再试', 'error');
+            });
+
+        // 加载推荐数据
+        fetch('/get_recommendations')
+            .then(response => response.json())
+            .then(updateRecommendations)
+            .catch(error => {
+                console.error(error);
+                showNotification('推荐数据加载失败', 'error');
+            });
+    }
+
+    // 增强型图表渲染
+    function renderCharts(categoryData) {
+        const validData = [];
+        const invalidData = [];
+        const categories = [];
+
+        // 数据处理（过滤零值）
+        categoryData.forEach(item => {
+            if (item.valid > 0 || item.invalid > 0) {
+                categories.push(item.order_category);
+                validData.push(item.valid);
+                invalidData.push(item.invalid);
+            }
+        });
+
+        const option = {
+            title: {
+                text: '分类订单分析',
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 18,
+                    fontFamily: 'Arial'
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: params => {
+                    return `${params[0].name}<br/>
+                        有效: ${params[0].value}<br/>
+                        无效: ${params[1].value}`;
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: categories,
+                axisLabel: {
+                    color: '#fff',
+                    rotate: 45
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: { color: '#fff' }
+            },
+            series: [
+                {
+                    name: '有效订单',
+                    type: 'bar',
+                    data: validData,
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#00f3ff' },
+                            { offset: 1, color: '#0066ff' }
+                        ])
+                    }
+                },
+                {
+                    name: '无效订单',
+                    type: 'bar',
+                    data: invalidData,
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#ff0066' },
+                            { offset: 1, color: '#bc13fe' }
+                        ])
+                    }
+                }
+            ]
+        };
+        if (chart) {
+            chart.setOption(option);
+        }
+    }
+
+    // 推荐列表渲染
+    function updateRecommendations(data) {
+        updateList('offlineList', data.offline, '🔥');
+        updateList('itemBasedList', data.item_based, '🚀');
+        updateListWithIndex('userBasedList', data.user_based, '👤');
+    }
+
+    function updateListWithIndex(elementId, items, icon) {
+        const container = document.getElementById(elementId);
+        if (!items || items.length === 0) {
+            container.innerHTML = `<div class="text-muted p-2">暂无推荐数据</div>`;
+            return;
+        }
+
+        container.innerHTML = items.map(item => `
+        <div class="d-flex justify-content-between align-items-center mb-2 p-2 cyber-glow">
+            <div>
+                <span class="me-2">${icon}</span>
+                ${item.category}
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-2">
+                  ${item.index.toFixed(0)}%
+                </span>
+
+            </div>
+        </div>
+    `).join('');
+}
+
+    // 响应式调整
+    function handleResize() {
+        if (chart) {
+            chart.resize();
+        }
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        initChart();
+        loadData();
+        setInterval(loadData, 15000);  // 每15秒刷新一次数据
+        window.addEventListener('resize', handleResize);
+    });
+</script>
+</body>
+</html>

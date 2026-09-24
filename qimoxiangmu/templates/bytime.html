@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实时订单监控中心</title>
+  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.3.2/dist/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+
+  <link rel="stylesheet" href="../static/js/bytime.css">
+</head>
+<body>
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+</div>
+
+<div class="container">
+  <header class="header">
+  </header>
+
+  <div class="dashboard-grid">
+    <div class="stats-card">
+      <div class="stats-header">
+        <h2>订单统计总览</h2>
+        <div class="refresh-indicator" id="lastUpdated">最后更新: --:--:--</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item valid-orders">
+          <div class="stat-label">有效订单</div>
+          <div class="stat-value" id="validOrdersCount">0</div>
+          <div class="stat-trend" id="validOrdersTrend">+0%</div>
+        </div>
+
+        <div class="stat-item invalid-orders">
+          <div class="stat-label">无效订单</div>
+          <div class="stat-value" id="invalidOrdersCount">0</div>
+          <div class="stat-trend" id="invalidOrdersTrend">+0%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">
+        <h2>订单趋势分析</h2>
+        <div class="chart-subtitle">实时更新的订单数量变化曲线</div>
+      </div>
+      <div class="chart-container" id="chart"></div>
+    </div>
+  </div>
+
+  <div class="updates-card">
+    <div class="updates-header">
+      <h2>最新订单动态</h2>
+      <div class="updates-count" id="updatesCount">0 条更新</div>
+    </div>
+    <div class="updates-list" id="orderUpdates">
+      <div class="no-updates-message">暂无最新订单动态</div>
+    </div>
+  </div>
+</div>
+
+<div class="connection-status connected" id="connectionStatus">
+  已连接到服务器
+</div>
+
+
+  <script src="/static/js/bytime.js"></script>
+
+</body>
+</html>

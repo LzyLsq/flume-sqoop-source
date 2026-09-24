@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>类别关联关系</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #3498db;
+        }
+
+        main {
+            padding: 30px 0;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ecf0f1;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #3498db;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+            color: #7f8c8d;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            margin-top: 15px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">数据可视化平台</div>
+            <ul class="nav-links">
+                <li><a href="/">首页</a></li>
+                <li><a href="/recommendation">个性化推荐</a></li>
+                <li><a href="/offline_recommendation">离线推荐</a></li>
+                <li><a href="/search">搜索</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <main>
+        <h1>类别关联关系</h1>
+        <p>以下是各类别之间的关联强度分析</p>
+
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>类别A</th>
+                        <th>类别B</th>
+                        <th>关联强度</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for pair in category_pairs %}
+                    <tr>
+                        <td>{{ pair.category_a }}</td>
+                        <td>{{ pair.category_b }}</td>
+                        <td>{{ pair.association_count }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">类别关联矩阵</div>
+                <div class="card-icon">
+                    <i class="fas fa-matrix"></i>
+                </div>
+            </div>
+            <div class="chart-container" id="association-matrix-chart"></div>
+        </div>
+    </main>
+</div>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2024 数据可视化平台. 保留所有权利.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 类别关联矩阵图表
+        const associationMatrixChart = echarts.init(document.getElementById('association-matrix-chart'));
+        const associationMatrixOption = {
+            title: {
+                text: '类别关联矩阵',
+                left: 'center'
+            },
+            tooltip: {
+                formatter: function(params) {
+                    return `${params.seriesName}: ${params.value}`;
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: [{% for pair in category_pairs %}'{{ pair.category_a }}',{% endfor %}]
+    },
+        yAxis: {
+            type: 'category',
+                data: [{% for pair in category_pairs %}'{{ pair.category_a }}',{% endfor %}]
+        },
+        visualMap: {
+            min: 0,
+                max: {% if category_pairs %}{% set max_val = max(pair.association_count for pair in category_pairs) %}{{ max_val }}{% else %}1{% endif %},
+            calculable: true,
+                orient: 'horizontal',
+                left: 'center',
+                bottom: '0%'
+        },
+        series: [
+            {
+                name: '关联强度',
+                type: 'heatmap',
+                data: [{% for pair in category_pairs %}{% set index_a = loop.index0 %}{% set index_b = loop.index0 %}[{{ index_a }}, {{ index_b }}, {{ pair.association_count }}],{% endfor %}],
+        label: {
+            show: true
+        }
+    }
+    ]
+    };
+        associationMatrixChart.setOption(associationMatrixOption);
+
+        // 响应式调整
+        window.addEventListener('resize', function() {
+            associationMatrixChart.resize();
+        });
+    });
+</script>
+</body>
+</html>

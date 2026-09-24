@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN"> <!-- 定义 HTML 文档语言为简体中文 -->
+
+<head>
+  <!-- 1. 文档元信息 -->
+  <meta charset="UTF-8"> <!-- 设置文档字符集为 UTF-8，支持多语言显示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 适配移动设备，设置视口比例 -->
+  <title>实时订单统计</title> <!-- 网页标题 -->
+
+  <!-- 2. 引入外部库和依赖 -->
+  <!-- 引入 Socket.IO 客户端，用于实时通信 -->
+  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.3.2/dist/socket.io.min.js"></script>
+  <!-- 引入 ECharts，用于数据可视化 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+  <!-- 引入 Three.js，用于 3D 地图渲染 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- 引入 Three.js 控制器，用于实现地球的交互操作 -->
+  <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- 引入外部样式文件 -->
+  <link rel="stylesheet" href="../static/js/styles.css">
+</head>
+
+<body>
+
+<!-- 3. 主题切换按钮 -->
+<!-- 提供一个按钮用于切换页面主题（如夜间模式） -->
+<button class="theme-toggle" id="themeToggle">
+  <!-- 图标显示当前主题状态 -->
+  <img id="themeIcon" src="/static/son.png" alt="切换主题">
+</button>
+
+<!-- 4. 加载动画 -->
+<!-- 页面加载时显示的动画，提升用户体验 -->
+<div id="loading">
+  <img src="/static/load2.gif" alt="loading..."> <!-- 显示加载中的 GIF 动画 -->
+</div>
+
+<!-- 5. 顶部内容：标题和时间显示 -->
+<div class="top-container">
+  <h1 data-text="实时订单统计">实时订单统计</h1> <!-- 主标题，显示为“实时订单统计” -->
+  <div id="timeDisplay"></div> <!-- 动态显示当前时间 -->
+</div>
+
+<!-- 6. 图表容器 -->
+<!-- 用于展示不同类型的数据统计图表 -->
+<div class="charts-container">
+  <div class="chart" id="chart1"></div> <!-- 图表1：总有效/无效订单数量统计 -->
+  <div class="chart" id="chart2"></div> <!-- 图表2：每个订单号的有效/无效数量统计 -->
+  <div class="chart" id="chart3"></div> <!-- 图表3：每个订单类别的数量统计 -->
+  <div class="chart" id="chart4"></div> <!-- 图表4：不同类别商品的有效/无效数量 -->
+  <div class="chart" id="chart5"></div> <!-- 图表5：各类别有效/无效比例 -->
+</div>
+
+<!-- 7. 3D 地图容器 -->
+<!-- 用于展示基于 Three.js 的地球渲染效果 -->
+<div id="earthContainer">
+  <div id="rendererText">地球窗口</div> <!-- 提示文字，用于说明地球窗口功能 -->
+</div>
+
+<!-- 8. 引入功能性脚本 -->
+<!-- Three.js 场景渲染逻辑 -->
+<script src="/static/js/threeScene.js"></script>
+<!-- ECharts 图表初始化与更新逻辑 -->
+<script src="/static/js/charts.js"></script>
+<!-- Socket.IO 实现实时数据通信逻辑 -->
+<script src="/static/js/socket.js"></script>
+<!-- 主题切换按钮逻辑 -->
+<script src="/static/js/themeToggle.js"></script>
+<!-- 动态时间显示逻辑 -->
+  });
+</body>
+
+</html>

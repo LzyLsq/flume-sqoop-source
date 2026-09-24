@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个性化推荐</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #3498db;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-left: 20px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #3498db;
+    }
+
+    main {
+      padding: 30px 0;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .recommendation {
+      margin-bottom: 40px;
+    }
+
+    .recommendation-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    .recommendation-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .recommendation-item {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: transform 0.3s;
+    }
+
+    .recommendation-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .recommendation-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .recommendation-score {
+      font-size: 0.9rem;
+      color: #3498db;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 50px;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">数据可视化平台</div>
+      <ul class="nav-links">
+        <li><a href="/">首页</a></li>
+        <li><a href="/recommendation" class="active">个性化推荐</a></li>
+        <li><a href="/offline_recommendation">离线推荐</a></li>
+        <li><a href="/search">搜索</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <main>
+    <h1>个性化推荐</h1>
+    <p>基于您的历史数据和行为，以下是为您推荐的热门项目</p>
+
+    <div class="recommendation">
+      <h2 class="recommendation-title">物品协同过滤推荐</h2>
+      <div class="recommendation-list">
+        {% for item in item_based_top3 %}
+        <div class="recommendation-item">
+          <div class="recommendation-name">{{ item.main_category }}</div>
+          <div class="recommendation-score">相似度: {{ item.association_strength }}</div>
+          <div class="recommendation-score">评分: {{ item.rating_score }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="recommendation">
+      <h2 class="recommendation-title">用户协同过滤推荐</h2>
+      <div class="recommendation-list">
+        {% for user in user_based_top3 %}
+        <div class="recommendation-item">
+          <div class="recommendation-name">{{ user.order_name }}</div>
+          <div class="recommendation-score">用户ID: {{ user.user_id }}</div>
+          <div class="recommendation-score">推荐类别: {{ user.recommended_categories }}</div>
+          <div class="recommendation-score">关联强度: {{ user.association_strength }}</div>
+          <div class="recommendation-score">用户评分: {{ user.user_rating }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2024 数据可视化平台. 保留所有权利.</p>
+  </div>
+</footer>
+</body>
+</html>

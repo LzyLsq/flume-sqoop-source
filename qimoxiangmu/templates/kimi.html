@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="../static/js/kimi.css">
+
+</head>
+
+<body>
+<div class="chat-container">
+    <!-- 聊天头部 -->
+    <div class="chat-header">智能 AI 聊天伙伴</div>
+    <!-- 清空聊天记录的按钮 -->
+    <button class="clear-button" onclick="clearChat()">清空记录</button>
+    <!-- 消息显示区域 -->
+    <div class="chat-messages" id="chat-messages">
+        <div class="chat-message ai-message">Kimi: 欢迎来到智能聊天世界，有什么疑问都能问我哟！</div>
+    </div>
+    <!-- 输入区域 -->
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="输入你的问题..." onkeydown="if (event.key === 'Enter') sendMessage()">
+        <button class="send-button" onclick="sendMessage()" id="send-button">发送</button>
+        <button class="voice-button" onclick="startVoiceInput()" id="voice-button">语音输入</button>
+        <div class="loading" id="loading"></div>
+    </div>
+</div>
+
+
+    <script src="../static/js/kimi.js"></script>
+
+</body>
+
+</html>

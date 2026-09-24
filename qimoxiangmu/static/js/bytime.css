@@ -1,0 +1,314 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --background-color: #0a0e17;
+    --card-color: #161a27;
+    --text-color: #e0e0e0;
+    --border-color: #2c3e50;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --transition: all 0.3s ease;
+    --neon-blue: #4091ff;
+    --neon-purple: #b330ff;
+    --neon-cyan: #00f7ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: black;
+    background-image: url('/static/background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    color: var(--neon-blue);
+    margin-bottom: 8px;
+    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+}
+
+.header p {
+    font-size: 1rem;
+    color: #999;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.stats-card {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    border: 1px solid var(--neon-blue);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.chart-card {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    border: 1px solid var(--neon-blue);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stats-header h2 {
+    font-size: 1.3rem;
+    color: var(--neon-blue);
+}
+
+.stats-header .refresh-indicator {
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat-item {
+    background: linear-gradient(135deg, var(--neon-blue), #2065d1);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    transition: var(--transition);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--neon-blue);
+}
+
+.stat-item:hover {
+    transform: translateY(-3px);
+;
+    box-shadow: 0 5px 15px rgba(64, 145, 255, 0.4);
+}
+
+.stat-item .stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 8px 0;
+    text-shadow: 0 0 5px rgba(64, 145, 255, 0.7);
+}
+
+.stat-item .stat-label {
+
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.valid-orders {
+    background: linear-gradient(135deg, var(--neon-blue), #2065d1);
+}
+
+.invalid-orders {
+    background: linear-gradient(135deg, var(--accent-color), #c0392b);
+}
+
+.updates-card {
+    background-color: var(--card-color);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: var(--shadow);
+    margin-top: 15px;
+    border: 1px solid var(--neon-blue);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.updates-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.updates-header h2 {
+    font-size: 1.3rem;
+    color: var(--neon-blue);
+}
+
+.updates-header .updates-count {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.updates-list {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.update-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.update-item:last-child {
+    border-bottom: none;
+}
+
+.update-time {
+    font-size: 0.75rem;
+    color: #888;
+    margin-right: 12px;
+    min-width: 100px;
+}
+
+.update-content {
+    flex: 1;
+}
+
+.update-order-id {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.update-valid {
+    color: #27ae60;
+}
+
+.update-invalid {
+    color: #e74c3c;
+}
+
+.chart-title {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.chart-title h2 {
+    font-size: 1.6rem;
+    color: var(--neon-blue);
+}
+
+.chart-title .chart-subtitle {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 14, 23, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(64, 145, 255, 0.2);
+    border-top: 4px solid var(--neon-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.connection-status {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    padding: 8px 12px;
+    border-radius: 25px;
+    font-size: 0.8rem;
+    z-index: 1000;
+    background-color: rgba(22, 26, 39, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--neon-blue);
+}
+
+.connection-status.connected {
+    color: #2ecc71;
+}
+
+.connection-status.disconnected {
+    color: #e74c3c;
+}
+
+.tooltip-custom {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.digital {
+    display: inline-block;
+    position: relative;
+    height: 1em;
+    line-height: 1em;
+}
+
+.digital::after {
+    content: attr(data-prev);
+    position: absolute;
+    top: -1em;
+    left: 0;
+    color: rgba(0, 0, 0, 0.2);
+    animation: roll 0.5s ease-in-out;
+}
+
+@keyframes roll {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-8px); }
+}

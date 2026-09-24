@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>功能卡片</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e6f7ff, #c2e9fb);
+      background-image: url('/static/background.png');
+      background-size: cover;
+      background-position: center;
+      color: #0a0e17;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* 装饰性光效 */
+    .decoration {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      opacity: 0.2;
+    }
+
+    .decoration-1 {
+      top: 10%;
+      left: 10%;
+      background: linear-gradient(45deg, #4c7bff, #00e5ff);
+    }
+
+    .decoration-2 {
+      bottom: 10%;
+      right: 10%;
+      background: linear-gradient(45deg, #7b68ee, #4c7bff);
+    }
+
+    .decoration-3 {
+      top: 40%;
+      right: 15%;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(45deg, #00e5ff, #4c7bff);
+    }
+
+    /* 网格背景 */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+              linear-gradient(rgba(76, 120, 255, 0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(76, 120, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 20px 20px;
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #0066cc, #0099ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1.5px;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: #2c5282;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .card {
+      background-color: rgba(173, 216, 230, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 12px 30px rgba(0, 105, 148, 0.2);
+      border: 1px solid rgba(76, 120, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      width: 280px;
+      height: 240px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-decoration: none;
+      color: inherit;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
+      box-shadow: 0 20px 40px rgba(0, 105, 148, 0.3);
+      border-color: rgba(76, 120, 255, 0.4);
+      background-color: rgba(173, 216, 230, 0.85);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(76, 120, 255, 0.1) 0%, transparent 70%);
+      animation: shine 4s infinite linear;
+      z-index: 0;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 18px;
+      background: linear-gradient(45deg, #4c7bff, #7b68ee, #00e5ff);
+      z-index: -1;
+      filter: blur(15px);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .card:hover::after {
+      opacity: 0.5;
+    }
+
+    @keyframes shine {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a365d;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: #0066cc;
+      font-size: 1.4rem;
+    }
+
+    .animation-container {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    /* 统一动画组件 */
+    .animated-element {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 数据可视化动画 */
+    .data-viz-anim {
+      position: relative;
+      width: 100px;
+      height: 80px;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+    }
+
+    .data-bar {
+      position: relative;
+      width: 12px;
+      background: linear-gradient(to top, #0066cc, #0099ff);
+      border-radius: 6px 6px 0 0;
+      animation: grow 1.8s infinite alternate;
+      box-shadow: 0 0 10px rgba(0, 102, 204, 0.4);
+    }
+
+    .data-bar::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -2px;
+      width: 16px;
+      height: 5px;
+      background-color: #00bfff;
+      border-radius: 50%;
+      filter: blur(4px);
+      opacity: 0.7;
+    }
+
+    /* AI智能分析动画 */
+    .ai-analysis-anim {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ai-node {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #0066cc;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #0066cc;
+      animation: pulse 2s infinite alternate;
+      z-index: 2;
+    }
+
+    .ai-connection {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, #0066cc, #00bfff);
+      transform-origin: left center;
+      z-index: 1;
+    }
+
+    /* 订单增量分析动画 */
+    .order-analysis-anim {
+      position: relative;
+      width: 120px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .order-bar {
+      position: relative;
+      width: 10px;
+      background: linear-gradient(to top, #0066cc, #0099ff);
+      border-radius: 5px 5px 0 0;
+      animation: grow 1.8s infinite alternate;
+      box-shadow: 0 0 10px rgba(0, 102, 204, 0.4);
+      margin: 0 4px;
+    }
+
+    .order-bar::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -2px;
+      width: 14px;
+      height: 5px;
+      background-color: #00bfff;
+      border-radius: 50%;
+      filter: blur(4px);
+      opacity: 0.7;
+    }
+
+    /* 大数据可视化动画 */
+    .big-data-anim {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .data-sphere {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(0, 102, 204, 0.15), rgba(0, 153, 255, 0.15));
+      animation: rotate 15s infinite linear;
+      box-shadow: 0 0 15px rgba(0, 102, 204, 0.2);
+    }
+
+    .sphere-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90%;
+      height: 2px;
+      background-color: rgba(0, 102, 204, 0.3);
+      transform-origin: center;
+    }
+
+    .data-point {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #00bfff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00bfff;
+      transform: translate(-50%, -50%);
+    }
+
+    /* 智能推荐动画 */
+    .recommendation-anim {
+      position: relative;
+      width: 110px;
+      height: 90px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .brain {
+      position: absolute;
+      width: 60px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(0, 102, 204, 0.2), rgba(0, 153, 255, 0.2));
+      border-radius: 30px;
+      top: 15px;
+      box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
+    }
+
+    .brain::before {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(0, 102, 204, 0.2);
+      border-radius: 50%;
+      top: -15px;
+      left: 15px;
+      box-shadow: 0 0 12px rgba(0, 102, 204, 0.3);
+    }
+
+    .brain::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(0, 102, 204, 0.2);
+      border-radius: 50%;
+      bottom: -12px;
+      left: 18px;
+      box-shadow: 0 0 12px rgba(0, 102, 204, 0.3);
+    }
+
+    .pulse {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #0066cc;
+      border-radius: 50%;
+      top: 25px;
+      left: 24px;
+      animation: brainPulse 2s infinite;
+      box-shadow: 0 0 8px #0066cc;
+      z-index: 2;
+    }
+
+    .wave {
+      position: absolute;
+      top: 55px;
+      width: 110px;
+      height: 15px;
+      background: linear-gradient(90deg, transparent, rgba(0, 191, 255, 0.3), transparent);
+      border-radius: 50%;
+      animation: waveMove 3s infinite linear;
+    }
+
+    /* 动画关键帧 */
+    @keyframes grow {
+      0% {
+        height: 10%;
+        opacity: 0.7;
+      }
+      100% {
+        height: calc(var(--height) * 1%);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.7;
+        box-shadow: 0 0 8px rgba(0, 102, 204, 0.4);
+      }
+      100% {
+        transform: scale(1.1);
+        opacity: 1;
+        box-shadow: 0 0 15px rgba(0, 102, 204, 0.7);
+      }
+    }
+
+    @keyframes brainPulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(0, 191, 255, 0.5);
+      }
+      70% {
+        box-shadow: 0 0 0 18px rgba(0, 191, 255, 0);
+      }
+      100% {
+        transform: scale(2.2);
+        opacity: 0;
+        box-shadow: 0 0 0 0 rgba(0, 191, 255, 0);
+      }
+    }
+
+    @keyframes waveMove {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      margin-top: 40px;
+      color: #2c5282;
+      font-size: 15px;
+      background-color: rgba(173, 216, 230, 0.7);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      box-shadow: 0 -10px 30px rgba(0, 105, 148, 0.2);
+      border: 1px solid rgba(76, 120, 255, 0.2);
+      width: 100%;
+      max-width: 800px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 992px) {
+      .header h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- 背景元素 -->
+<div class="grid-bg"></div>
+<div class="decoration decoration-1"></div>
+<div class="decoration decoration-2"></div>
+<div class="decoration decoration-3"></div>
+
+<!-- 标题区域 -->
+<div class="header">
+  <h1>功能卡片</h1>
+</div>
+
+<div class="container">
+  <div class="dashboard">
+    <!-- kimiai 卡片 -->
+    <a href="/kimi" class="card" target="_blank">
+      <h3 class="card-title"><i class="fas fa-chart-line"></i> kimiai</h3>
+      <div class="animation-container">
+        <div class="animated-element">
+          <div class="data-viz-anim">
+            <div class="data-bar" style="--height: 70; animation-delay: 0s;"></div>
+            <div class="data-bar" style="--height: 40; animation-delay: 0.2s;"></div>
+            <div class="data-bar" style="--height: 90; animation-delay: 0.4s;"></div>
+            <div class="data-bar" style="--height: 60; animation-delay: 0.6s;"></div>
+            <div class="data-bar" style="--height: 85; animation-delay: 0.8s;"></div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- AI智能分析卡片 -->
+    <a href="/kimi_analysis" class="card" target="_blank">
+      <h3 class="card-title"><i class="fas fa-brain"></i> AI智能分析</h3>
+      <div class="animation-container">
+        <div class="animated-element">
+          <div class="ai-analysis-anim">
+            <div class="ai-node" style="top: 20%; left: 20%;"></div>
+            <div class="ai-node" style="top: 40%; left: 60%;"></div>
+            <div class="ai-node" style="top: 70%; left: 30%;"></div>
+            <div class="ai-node" style="top: 50%; left: 80%;"></div>
+            <div class="ai-connection" style="top: 20%; left: 20%; transform: rotate(30deg); width: 60%;"></div>
+            <div class="ai-connection" style="top: 40%; left: 60%; transform: rotate(-20deg); width: 40%;"></div>
+            <div class="ai-connection" style="top: 70%; left: 30%; transform: rotate(15deg); width: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 订单增量分析卡片 -->
+    <a href="/bytime" class="card" target="_blank">
+      <h3 class="card-title"><i class="fas fa-trend-up"></i> 订单增量分析</h3>
+      <div class="animation-container">
+        <div class="animated-element">
+          <div class="order-analysis-anim">
+            <div class="order-bar" style="--height: 40; animation-delay: 0s;"></div>
+            <div class="order-bar" style="--height: 60; animation-delay: 0.1s;"></div>
+            <div class="order-bar" style="--height: 80; animation-delay: 0.2s;"></div>
+            <div class="order-bar" style="--height: 65; animation-delay: 0.3s;"></div>
+            <div class="order-bar" style="--height: 90; animation-delay: 0.4s;"></div>
+            <div class="order-bar" style="--height: 75; animation-delay: 0.5s;"></div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 大数据可视化卡片 -->
+    <a href="/show" class="card" target="_blank">
+      <h3 class="card-title"><i class="fas fa-globe-asia"></i> 大数据可视化</h3>
+      <div class="animation-container">
+        <div class="animated-element">
+          <div class="big-data-anim">
+            <div class="data-sphere">
+              <div class="sphere-ring" style="transform: rotate(0deg);"></div>
+              <div class="sphere-ring" style="transform: rotate(45deg);"></div>
+              <div class="sphere-ring" style="transform: rotate(90deg);"></div>
+              <div class="sphere-ring" style="transform: rotate(135deg);"></div>
+              <div class="data-point" style="top: 30%; left: 40%;"></div>
+              <div class="data-point" style="top: 60%; left: 70%;"></div>
+              <div class="data-point" style="top: 45%; left: 20%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- 智能推荐卡片 -->
+    <a href="http://localhost:5022" class="card" target="_blank">
+      <h3 class="card-title"><i class="fas fa-lightbulb"></i> 智能推荐</h3>
+      <div class="animation-container">
+        <div class="animated-element">
+          <div class="recommendation-anim">
+            <div class="brain"></div>
+            <div class="pulse"></div>
+            <div class="wave"></div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<footer>
+</footer>
+
+<script>
+  // 卡片点击效果
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', function() {
+      this.style.transform = 'translateY(-15px) scale(0.98)';
+      this.style.boxShadow = '0 15px 35px rgba(0, 105, 148, 0.4)';
+
+      setTimeout(() => {
+        this.style.transform = 'translateY(-10px) rotateX(5deg) rotateY(-5deg)';
+        this.style.boxShadow = '0 20px 40px rgba(0, 105, 148, 0.3)';
+      }, 300);
+    });
+  });
+</script>
+</body>
+</html>

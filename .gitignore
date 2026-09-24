@@ -1,0 +1,39 @@
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# ===== Java/Scala 编译产物 =====
+target/
+out/
+build/
+*.class
+*.jar
+*.war
+*.log
+logs/
+dependency-reduced-pom.xml
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.env
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+
+# ===== 大数据/Spark 临时产物 =====
+*.crc
+part-*
+_SUCCESS
+spark-warehouse/
+metastore_db/
+derby.log

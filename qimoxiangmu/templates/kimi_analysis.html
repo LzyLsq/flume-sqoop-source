@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kimi 分析结果</title>
+    <!-- 引入Chart.js库用于绘制柱状图 -->
+    <script src="https://cdn.jsdelivr.net.cn/npm/chart.js"></script>
+    <link rel="stylesheet" href="../static/js/kimi_analysis.css">
+
+</head>
+<body>
+<div class="neon-glow"></div>
+<div class="container">
+    <h1>📊 Kimi 智能分析看板</h1>
+    <div class="dashboard">
+        <div class="text-container" id="analysisTextContainer">
+            <!-- 文本分析结果将在这里动态添加 -->
+        </div>
+        <div class="chart-container">
+            <canvas id="analysisChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="../static/js/kimi_analysis.js"></script>
+</body>
+</html>
